@@ -5,7 +5,7 @@ function createInitialBoard() {
   const squares = Array(64).fill(null);
 
   for (let i = 8; i <= 15; i++) {
-    squares[i] = { type: 'pawn', color: 'black' };
+    squares[i] = { type: 'pawn', color: 'black', hasMoved: false };
   }
 
   squares[0] = { type: 'rook', color: 'black' };
@@ -21,7 +21,7 @@ function createInitialBoard() {
   squares[4] = { type: 'king', color: 'black' };
 
   for (let i = 48; i <= 55; i++) {
-    squares[i] = { type: 'pawn', color: 'white' };
+    squares[i] = { type: 'pawn', color: 'white', hasMoved: false };
   }
 
   squares[56] = { type: 'rook', color: 'white' };
@@ -62,38 +62,131 @@ function Square({ piece, isWhite, isSelected, onClick }) {
   );
 }
 
+function isValidBishopMove(from, to, squares){
+
+  const fromRow = Math.floor(from / 8);
+  const fromCol = from % 8;
+  const toRow = Math.floor(to / 8);
+  const toCol = to % 8;
+
+  const rowDiff = toRow - fromRow;
+  const colDiff = toCol - fromCol;
+
+  if (Math.abs(rowDiff) !== Math.abs(colDiff)) {
+    return false;
+  }
+
+  const rowStep = rowDiff > 0 ? 1 : -1;
+  const colStep = colDiff > 0 ? 1 : -1;
+
+  let currentRow = fromRow + rowStep;
+  let currentCol = fromCol + colStep;
+
+  while (currentRow !== toRow && currentCol !== toCol) {
+    const index = currentRow * 8 + currentCol;
+
+    if (squares[index] !== null) {
+      return false;
+    }
+
+    currentRow += rowStep;
+    currentCol += colStep;
+  }
+  return true;
+}
+
+function isValidPawnMove(from, to, piece, squares) {
+  const direction = piece.color === 'white' ? -8 : 8;
+  const moveDistance = to - from;
+  const targetPiece = squares[to];
+
+  if ((moveDistance === direction + 1 || moveDistance === direction - 1) && targetPiece !== null && targetPiece.color !== piece.color) {
+    return true;
+  }
+
+  // Pawns cannot move into occupied squares straight ahead
+  if (targetPiece !== null) {
+    return false;
+  }
+
+  
+  // First move: 1 or 2 spaces forward
+  if (!piece.hasMoved) {
+    if (moveDistance === direction) {
+      return true;
+    }
+
+    if (moveDistance === direction * 2) {
+      const middleSquare = from + direction;
+
+      if (squares[middleSquare] === null) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  // After first move: only 1 space forward
+  return moveDistance === direction;
+}
+
 function Board() {
   const [squares, setSquares] = useState(createInitialBoard());
   const [selectedIndex, setSelectedIndex] = useState(null);
 
   function handleSquareClick(i) {
-    const clickedPiece = squares[i];
+  const toPiece = squares[i];
 
-    if (selectedIndex === null) {
-      if (clickedPiece) {
-        setSelectedIndex(i);
-      }
-      return;
-    }
-
-    if (selectedIndex === i) {
-      setSelectedIndex(null);
-      return;
-    }
-
-    const selectedPiece = squares[selectedIndex];
-
-    if (clickedPiece && clickedPiece.color === selectedPiece.color){
+  if (selectedIndex === null) {
+    if (toPiece) {
       setSelectedIndex(i);
+    }
+    return;
+  }
+
+  if (selectedIndex === i) {
+    setSelectedIndex(null);
+    return;
+  }
+
+  const from = selectedIndex;
+  const to = i;
+  const fromPiece = squares[from];
+
+  if (toPiece && toPiece.color === fromPiece.color) {
+    setSelectedIndex(i);
+    return;
+  }
+
+  if (fromPiece.type === 'pawn') {
+    const validPawnMove = isValidPawnMove(from, to, fromPiece, squares);
+
+    if (!validPawnMove) {
       return;
     }
-    const newSquares = squares.slice();
-    newSquares[i] = newSquares[selectedIndex];
-    newSquares[selectedIndex] = null;
-
-    setSquares(newSquares);
-    setSelectedIndex(null);
   }
+
+  if (fromPiece.type === 'bishop') {
+    const validBishopMove = isValidBishopMove(from, to, squares);
+
+    if (!validBishopMove) {
+      return
+    }
+  }
+
+  const newSquares = squares.slice();
+  const movedPiece =
+    fromPiece.type === 'pawn'
+      ? { ...fromPiece, hasMoved: true }
+      : fromPiece;
+
+  newSquares[to] = movedPiece;
+  newSquares[from] = null;
+
+  setSquares(newSquares);
+  setSelectedIndex(null);
+}
 
   return (
     <div className="board">
