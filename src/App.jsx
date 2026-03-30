@@ -62,6 +62,137 @@ function Square({ piece, isWhite, isSelected, onClick }) {
   );
 }
 
+function isValidRookMove(from, to, squares) {
+  const fromRow = Math.floor(from / 8);
+  const fromCol = from % 8;
+  const toRow = Math.floor(to / 8);
+  const toCol = to % 8;
+
+  const rowDiff = toRow - fromRow;
+  const colDiff = toCol - fromCol;
+
+  if (
+    !(fromRow === toRow || fromCol === toCol)
+  ) {
+    return false;
+  }
+
+  if (fromRow === toRow || fromCol === toCol){
+    const rowStep = rowDiff > 0 ? 1 : -1;
+    const colStep = colDiff > 0 ? 1 : -1;
+
+    if (fromRow === toRow){
+      let currentCol = fromCol + colStep;
+      let currentRow = fromRow;
+      while (currentCol !== toCol){
+        const index = currentRow * 8 + currentCol;
+
+        if (squares[index] !== null){
+          return false;
+        }
+
+        currentCol += colStep;
+      }
+      return true;
+    }
+
+    if (fromCol === toCol){
+      let currentCol = fromCol;
+      let currentRow = fromRow + rowStep;
+
+      while (currentRow !== toRow){
+        const index = currentRow * 8 + currentCol;
+
+        if (squares[index] !== null){
+          return false;
+        }
+
+        currentRow += rowStep;
+      }
+      return true;
+    }
+  }
+}
+
+function isValidQueenMove(from, to, squares) {
+  const fromRow = Math.floor(from / 8);
+  const fromCol = from % 8;
+  const toRow = Math.floor(to / 8);
+  const toCol = to % 8;
+
+  const rowDiff = toRow - fromRow;
+  const colDiff = toCol - fromCol;
+
+  if (
+    !(Math.abs(rowDiff) === Math.abs(colDiff)) &&
+    !(fromRow === toRow || fromCol === toCol)
+  ) {
+    return false;
+  }
+  if (from === to){
+    return false;
+  }
+
+  if (fromRow === toRow && fromCol !== toCol || fromRow !== toRow && fromCol === toCol){
+    const rowStep = rowDiff > 0 ? 1 : -1;
+    const colStep = colDiff > 0 ? 1 : -1;
+
+    if (fromRow !== toRow){
+      let currentRow = fromRow + rowStep;
+      let currentCol = fromCol;
+
+      while (currentRow !== toRow){
+        const index = currentRow * 8 + currentCol;
+        
+
+        if (squares[index] !== null){
+          return false;
+        }
+
+        currentRow += rowStep;
+      }
+      return true;
+    }
+
+    if (fromCol !== toCol){
+      let currentRow = fromRow;
+      let currentCol = fromCol + colStep;
+
+      while (currentCol !== toCol){
+        const index = currentRow * 8 + currentCol;
+        
+
+        if (squares[index] !== null){
+          return false;
+        }
+
+        currentCol += colStep;
+      }
+      return true;
+    }
+  } else if (Math.abs(rowDiff) === Math.abs(colDiff)) {
+    const rowStep = rowDiff > 0 ? 1 : -1;
+    const colStep = colDiff > 0 ? 1 : -1;
+
+    let currentRow = fromRow + rowStep;
+    let currentCol = fromCol + colStep;
+
+    while (currentRow !== toRow && currentCol !== toCol) {
+      const index = currentRow * 8 + currentCol;
+
+      if (squares[index] !== null) {
+        return false;
+      }
+
+      currentRow += rowStep;
+      currentCol += colStep;
+    }
+    return true;
+  } else {
+    return false;
+  }
+}
+
 function isValidBishopMove(from, to, squares){
 
   const fromRow = Math.floor(from / 8);
@@ -157,6 +288,22 @@ function Board() {
   if (toPiece && toPiece.color === fromPiece.color) {
     setSelectedIndex(i);
     return;
+  }
+
+  if (fromPiece.type === 'rook'){
+    const validRookMove = isValidRookMove(from, to, squares)
+
+    if (!validRookMove) {
+      return;
+    }
+  }
+
+  if (fromPiece.type === 'queen') {
+    const validQueenMove = isValidQueenMove(from, to, squares);
+
+    if (!validQueenMove){
+      return;
+    }
   }
 
   if (fromPiece.type === 'pawn') {
