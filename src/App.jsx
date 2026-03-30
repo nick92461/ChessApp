@@ -1,8 +1,44 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
-import './App.css'
+import { useState } from 'react';
+import './App.css';
+
+function createInitialBoard() {
+  const squares = Array(64).fill(null);
+
+  for (let i = 8; i <= 15; i++) {
+    squares[i] = { type: 'pawn', color: 'black' };
+  }
+
+  squares[0] = { type: 'rook', color: 'black' };
+  squares[7] = { type: 'rook', color: 'black' };
+
+  squares[1] = { type: 'knight', color: 'black' };
+  squares[6] = { type: 'knight', color: 'black' };
+
+  squares[2] = { type: 'bishop', color: 'black' };
+  squares[5] = { type: 'bishop', color: 'black' };
+
+  squares[3] = { type: 'queen', color: 'black' };
+  squares[4] = { type: 'king', color: 'black' };
+
+  for (let i = 48; i <= 55; i++) {
+    squares[i] = { type: 'pawn', color: 'white' };
+  }
+
+  squares[56] = { type: 'rook', color: 'white' };
+  squares[63] = { type: 'rook', color: 'white' };
+
+  squares[57] = { type: 'knight', color: 'white' };
+  squares[62] = { type: 'knight', color: 'white' };
+
+  squares[58] = { type: 'bishop', color: 'white' };
+  squares[61] = { type: 'bishop', color: 'white' };
+
+  squares[59] = { type: 'queen', color: 'white' };
+  squares[60] = { type: 'king', color: 'white' };
+
+  return squares;
+}
+
 function Piece({ type, color }) {
   const src = `/assets/${color}_${type}.png`;
 
@@ -26,60 +62,17 @@ function Square({ piece, isWhite, isSelected, onClick }) {
   );
 }
 
-function Board(){
+function Board() {
+  const [squares, setSquares] = useState(createInitialBoard());
   const [selectedIndex, setSelectedIndex] = useState(null);
 
-  const squares = Array(64).fill(null);
-
-  // Black pawns
-  for (let i = 8; i <= 15; i++) {
-    squares[i] = { type: 'pawn', color: 'black' };
-  }
-
-  // Black Rooks
-  squares[0] = { type: 'rook', color: 'black'}; 
-  squares[7] = { type: 'rook', color: 'black'};
-
-  // Black Knights
-  squares[1] = { type: 'knight', color: 'black'};
-  squares[6] = { type: 'knight', color: 'black'};
-
-  // Black Bishops
-  squares[2] = { type: 'bishop', color: 'black'};
-  squares[5] = { type: 'bishop', color: 'black'};
-
-  // Black King
-  squares[4] = { type: 'king', color: 'black'};
-  // Black Queen
-  squares[3] = { type: 'queen', color: 'black'};
-
-  // White pawns
-  for (let i = 48; i <= 55; i++) {
-    squares[i] = { type: 'pawn', color: 'white' };
-  }
-
-  // White Rooks
-  squares[56] = { type: 'rook', color: 'white' };
-  squares[63] = { type: 'rook', color: 'white' };
-
-  // White Knights
-  squares[57] = { type: 'knight', color: 'white'};
-  squares[62] = { type: 'knight', color: 'white'};
-
-  // White Bishops
-  squares[58] = { type: 'bishop', color: 'white' };
-  squares[61] = { type: 'bishop', color: 'white' };
-
-  // White Queen
-  squares[59] = { type: 'queen', color: 'white' };
-
-  // White King
-  squares[60] = { type: 'king', color: 'white' };
-
   function handleSquareClick(i) {
-    const piece = squares[i];
+    const clickedPiece = squares[i];
 
-    if (!piece) {
+    if (selectedIndex === null) {
+      if (clickedPiece) {
+        setSelectedIndex(i);
+      }
       return;
     }
 
@@ -88,18 +81,19 @@ function Board(){
       return;
     }
 
-    console.log('clicked piece:', piece.type, piece.color, 'at index', i);
-    setSelectedIndex(i);
-  }
+    const newSquares = squares.slice();
+    newSquares[i] = newSquares[selectedIndex];
+    newSquares[selectedIndex] = null;
 
+    setSquares(newSquares);
+    setSelectedIndex(null);
+  }
 
   return (
     <div className="board">
       {squares.map((piece, i) => {
         const row = Math.floor(i / 8);
         const col = i % 8;
-
-        
         const isWhite = (row + col) % 2 === 0;
 
         return (
@@ -117,9 +111,7 @@ function Board(){
 }
 
 export default function ChessGame() {
-  return (
-    <Board />
-  )
+  return <Board />;
 }
 
 
