@@ -3,7 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
-function Piece({ type, color}) {
+function Piece({ type, color }) {
   const src = `/assets/${color}_${type}.png`;
 
   return (
@@ -33,7 +33,9 @@ function Board(){
   for (let i = 8; i <= 15; i++) {
     squares[i] = { type: 'pawn', color: 'black' };
   }
-
+  // Black Rooks
+  squares[0] = { type: 'rook', color: 'black'}; 
+  squares[7] = { type: 'rook', color: 'black'};
   // White pawns
   for (let i = 48; i <= 55; i++) {
     squares[i] = { type: 'pawn', color: 'white' };
@@ -65,3 +67,20 @@ export default function ChessGame() {
     <Board />
   )
 }
+
+
+
+
+
+
+
+
+
+/*Row 0:   0   1   2   3   4   5   6   7
+  Row 1:   8   9  10  11  12  13  14  15
+  Row 2:  16  17  18  19  20  21  22  23
+  Row 3:  24  25  26  27  28  29  30  31
+  Row 4:  32  33  34  35  36  37  38  39
+  Row 5:  40  41  42  43  44  45  46  47
+  Row 6:  48  49  50  51  52  53  54  55
+  Row 7:  56  57  58  59  60  61  62  63 */
