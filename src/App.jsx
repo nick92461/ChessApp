@@ -5,7 +5,9 @@ import heroImg from './assets/hero.png'
 import './App.css'
 
 function Square(){
-    
+    return (
+      <button className="sqaure"></button>
+    )
 }
 
 function Board(){
@@ -13,5 +15,5 @@ function Board(){
 }
 
 export default function ChessGame() {
-
+  
 }
