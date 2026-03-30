@@ -81,6 +81,12 @@ function Board() {
       return;
     }
 
+    const selectedPiece = squares[selectedIndex];
+
+    if (clickedPiece && clickedPiece.color === selectedPiece.color){
+      setSelectedIndex(i);
+      return;
+    }
     const newSquares = squares.slice();
     newSquares[i] = newSquares[selectedIndex];
     newSquares[selectedIndex] = null;
