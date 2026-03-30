@@ -33,13 +33,47 @@ function Board(){
   for (let i = 8; i <= 15; i++) {
     squares[i] = { type: 'pawn', color: 'black' };
   }
+
   // Black Rooks
   squares[0] = { type: 'rook', color: 'black'}; 
   squares[7] = { type: 'rook', color: 'black'};
+
+  // Black Knights
+  squares[1] = { type: 'knight', color: 'black'};
+  squares[6] = { type: 'knight', color: 'black'};
+
+  // Black Bishops
+  squares[2] = { type: 'bishop', color: 'black'};
+  squares[5] = { type: 'bishop', color: 'black'};
+
+  // Black King
+  squares[4] = { type: 'king', color: 'black'};
+  // Black Queen
+  squares[3] = { type: 'queen', color: 'black'};
+
   // White pawns
   for (let i = 48; i <= 55; i++) {
     squares[i] = { type: 'pawn', color: 'white' };
   }
+
+  // White Rooks
+  squares[56] = { type: 'rook', color: 'white' };
+  squares[63] = { type: 'rook', color: 'white' };
+
+  // White Knights
+  squares[57] = { type: 'knight', color: 'white'};
+  squares[62] = { type: 'knight', color: 'white'};
+
+  // White Bishops
+  squares[58] = { type: 'bishop', color: 'white' };
+  squares[61] = { type: 'bishop', color: 'white' };
+
+  // White Queen
+  squares[59] = { type: 'queen', color: 'white' };
+
+  // White King
+  squares[60] = { type: 'queen', color: 'white' };
+
   return (
     <div className="board">
       {squares.map((piece, i) => {
