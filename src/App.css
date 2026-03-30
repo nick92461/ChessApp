@@ -1,14 +1,31 @@
+
+
+:root {
+  --square-size: 64px;
+}
+
+.board {
+  display: grid;
+  grid-template-columns: repeat(8, var(--square-size));
+  width: fit-content;
+  border: 2px solid #333;
+}
+
 .square {
-  background: #fff;
-  border: 10px solid #59a0c9fb;
-  float: left;
-  font-size: 24px;
-  font-weight: bold;
-  line-height: 34px;
-  height: 10px;
-  margin-right: -1px;
-  margin-top: -1px;
+  width: var(--square-size);
+  height: var(--square-size);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(var(--square-size) * 0.5);
+  border: none;
   padding: 0;
-  text-align: center;
-  width: 34px;
+}
+
+.white {
+  background-color: #f0d9b5;
+}
+
+.black {
+  background-color: #b58863;
 }
