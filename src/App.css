@@ -35,3 +35,8 @@
 .black {
   background-color: #b58863;
 }
+
+.selected {
+  outline: 4px solid yellow;
+  outline-offset: -4px;
+}

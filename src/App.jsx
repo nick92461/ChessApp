@@ -15,10 +15,10 @@ function Piece({ type, color }) {
   );
 }
 
-function Square({ piece, value, isWhite, onClick }) {
+function Square({ piece, isWhite, isSelected, onClick }) {
   return (
     <button
-      className={`square ${isWhite ? 'white' : 'black'}`}
+      className={`square ${isWhite ? 'white' : 'black'} ${isSelected ? 'selected' : ''}`}
       onClick={onClick}
     >
       {piece && <Piece type={piece.type} color={piece.color} />}
@@ -27,6 +27,8 @@ function Square({ piece, value, isWhite, onClick }) {
 }
 
 function Board(){
+  const [selectedIndex, setSelectedIndex] = useState(null);
+
   const squares = Array(64).fill(null);
 
   // Black pawns
@@ -72,7 +74,24 @@ function Board(){
   squares[59] = { type: 'queen', color: 'white' };
 
   // White King
-  squares[60] = { type: 'queen', color: 'white' };
+  squares[60] = { type: 'king', color: 'white' };
+
+  function handleSquareClick(i) {
+    const piece = squares[i];
+
+    if (!piece) {
+      return;
+    }
+
+    if (selectedIndex === i) {
+      setSelectedIndex(null);
+      return;
+    }
+
+    console.log('clicked piece:', piece.type, piece.color, 'at index', i);
+    setSelectedIndex(i);
+  }
+
 
   return (
     <div className="board">
@@ -80,7 +99,7 @@ function Board(){
         const row = Math.floor(i / 8);
         const col = i % 8;
 
-        // This is the key line for checker pattern
+        
         const isWhite = (row + col) % 2 === 0;
 
         return (
@@ -88,7 +107,8 @@ function Board(){
             key={i}
             piece={piece}
             isWhite={isWhite}
-            onClick={() => console.log(i, piece)}
+            isSelected={selectedIndex === i}
+            onClick={() => handleSquareClick(i)}
           />
         );
       })}
