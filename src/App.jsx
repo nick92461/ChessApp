@@ -62,6 +62,45 @@ function Square({ piece, isWhite, isSelected, onClick }) {
   );
 }
 
+
+
+function isValidKingMove(from, to, squares) {
+  const fromRow = Math.floor(from / 8);
+  const fromCol = from % 8;
+  const toRow = Math.floor(to / 8);
+  const toCol = to % 8;
+
+  const rowDiff = Math.abs(toRow - fromRow);
+  const colDiff = Math.abs(toCol - fromCol);
+
+  if (
+    rowDiff <= 1 &&
+    colDiff <= 1 &&
+    (rowDiff !== 0 || colDiff !== 0)
+  ) {
+    return true;
+  }
+  return false;
+}
+
+function isValidKnightMove(from, to){
+  const fromRow = Math.floor(from / 8);
+  const fromCol = from % 8;
+  const toRow = Math.floor(to / 8);
+  const toCol = to % 8;
+
+  const rowDiff = Math.abs(toRow - fromRow);
+  const colDiff = Math.abs(toCol - fromCol);
+
+  if (
+    rowDiff === 2 && colDiff === 1 ||
+    colDiff === 2 && rowDiff === 1
+  ){
+    return true;
+  }
+  return false;
+}
+
 function isValidRookMove(from, to, squares) {
   const fromRow = Math.floor(from / 8);
   const fromCol = from % 8;
@@ -290,8 +329,24 @@ function Board() {
     return;
   }
 
+  if (fromPiece.type === 'king'){
+    const validKingMove = isValidKingMove(from, to, squares)
+
+    if (!validKingMove){
+      return;
+    }
+  }
+
+  if (fromPiece.type === "knight") {
+    const validKnightMove = isValidKnightMove(from, to, squares);
+
+    if (!validKnightMove) {
+      return;
+    }
+  }
+
   if (fromPiece.type === 'rook'){
-    const validRookMove = isValidRookMove(from, to, squares)
+    const validRookMove = isValidRookMove(from, to, squares);
 
     if (!validRookMove) {
       return;
